@@ -1,9 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+from datetime import date
+
+# Define today's date
+today = date.today()
+# Create date for url
+url_date = today.strftime('%m/%d/%Y')
 
 # Define url to scrape
-URL = 'https://cp.spokanecounty.org/courtdocumentviewer/PublicViewer/SCHearingsByDate.aspx?d=01/23/2019'
+URL = 'https://cp.spokanecounty.org/courtdocumentviewer/PublicViewer/SCHearingsByDate.aspx?d={}'.format(url_date)
 # Define headers
 HEADERS = {
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',}
@@ -36,7 +42,8 @@ for row in table.find_all('tr', class_='detailrow'):
     list_of_rows.append(list_of_cells)
 
 # Create output file
-outfile = open('docket.csv', 'w', newline='', encoding='utf-8')
+filename_date = today.strftime('%Y-%m-%d')
+outfile = open('docket_{}.csv'.format(filename_date), 'w', newline='', encoding='utf-8')
 writer = csv.writer(outfile)
 writer.writerows(list_of_rows)
 outfile.close()
